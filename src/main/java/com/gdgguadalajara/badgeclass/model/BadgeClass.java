@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.gdgguadalajara.issuer.model.Issuer;
+import com.gdgguadalajara.storage.model.Image;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
@@ -33,13 +35,15 @@ public class BadgeClass extends PanacheEntityBase {
     @Column(nullable = false, columnDefinition = "TEXT")
     public String description;
 
-    @Column(nullable = false)
-    public String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    public Image image;
 
     @Column(columnDefinition = "TEXT")
     public String criteriaMd;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
+    @JsonRawValue
     public String jsonPayload;
 
     @CreationTimestamp
