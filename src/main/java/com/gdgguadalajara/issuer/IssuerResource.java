@@ -33,7 +33,7 @@ public class IssuerResource {
     public String jsondl(UUID uuid) {
         var issuer = Issuer.<Issuer>findById(uuid);
         if (issuer == null)
-            throw DomainException.notFound("Issuer no encontrado");
+            throw DomainException.notFound("Emisor no encontrado");
         return issuer.jsonPayload;
     }
 

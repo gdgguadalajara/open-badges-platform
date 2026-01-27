@@ -28,7 +28,7 @@ public class CreateIssuer {
     public Issuer run(CreateIssuerRequest request) {
         var user = getCurrentSession.run();
         if (!user.isSuperAdmin)
-            throw DomainException.forbidden("Solo super administradores pueden crear issuers.");
+            throw DomainException.forbidden("Solo super administradores pueden crear emosores.");
         var issuer = new Issuer();
         issuer.name = request.name();
         issuer.description = request.description();
@@ -41,7 +41,7 @@ public class CreateIssuer {
             issuer.jsonPayload = objectMapper.writeValueAsString(issuerJsonLD);
             issuer.persistAndFlush();
         } catch (JsonProcessingException e) {
-            throw DomainException.badRequest("Error al generar el JSON-LD del Issuer");
+            throw DomainException.badRequest("Error al generar el JSON-LD del emisores");
         }
         return issuer;
     }
