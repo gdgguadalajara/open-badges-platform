@@ -1,4 +1,4 @@
-package com.gdgguadalajara.issuer.resources.v2;
+package com.gdgguadalajara.issuer;
 
 import java.util.UUID;
 
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Path("/api/v2/issuer")
 @RequiredArgsConstructor
-public class IssuerV2Resource {
+public class IssuerResource {
 
     private final CreateIssuer createIssuer;
 
