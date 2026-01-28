@@ -28,7 +28,7 @@ public class MembershipResource {
     @Path("/issuers/{issuerUuid}/accounts")
     @Authenticated
     @SuperAdmin
-    public IssuerMember create(UUID issuerUuid, UUID accountUuid, CreateIssuerMemberRequest request) {
+    public IssuerMember create(UUID issuerUuid, CreateIssuerMemberRequest request) {
         return createIssuerMember.run(issuerUuid, request);
     }
 
