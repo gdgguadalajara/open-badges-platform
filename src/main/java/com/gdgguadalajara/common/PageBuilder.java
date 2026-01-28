@@ -2,6 +2,7 @@ package com.gdgguadalajara.common;
 
 import com.gdgguadalajara.common.model.PaginatedResponse;
 import com.gdgguadalajara.common.model.PaginationMeta;
+import com.gdgguadalajara.common.model.dto.PaginationRequestParams;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
@@ -23,5 +24,9 @@ public class PageBuilder {
                 prevPage);
 
         return new PaginatedResponse<>(list, meta);
+    }
+
+    public static <T> PaginatedResponse<T> of(PanacheQuery<T> query, PaginationRequestParams params) {
+        return PageBuilder.of(query, params.page, params.size);
     }
 }
