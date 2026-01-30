@@ -14,6 +14,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.security.identity.SecurityIdentityAugmentor;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -30,40 +31,45 @@ public class AccountAugmentor implements SecurityIdentityAugmentor {
     public Uni<SecurityIdentity> augment(SecurityIdentity identity, AuthenticationRequestContext context) {
         if (identity.isAnonymous())
             return Uni.createFrom().item(identity);
+
         UserInfo userInfo = identity.getAttribute("userinfo");
         String email = null;
-        String name = null;
-        if (userInfo != null) {
+        String name = userInfo.getString("name");
+
+        if (userInfo != null)
             email = userInfo.getString("email");
-            name = userInfo.getString("name");
-        }
         if (email == null)
             email = identity.getPrincipal().getName();
-        if (email == null || email.isBlank()) {
+        if (email == null || email.isBlank())
             return Uni.createFrom().item(identity);
-        }
+
         final String finalEmail = email;
-        final String finalName = (name != null) ? name : email;
-        return context.runBlocking(() -> {
-            var account = syncAccount(finalEmail, finalName);
+        final String finalName = name != null ? name : "";
+        return context.runBlocking(() -> performAugmentation(identity, finalEmail, finalName));
+    }
+
+    @ActivateRequestContext
+    public SecurityIdentity performAugmentation(SecurityIdentity identity, String email, String name) {
+        var account = Account.<Account>find("email", email).firstResult();
+
+        if (account == null && isSuperAdmin(email))
+            account = createSuperAdmin(email, name);
+        if (account != null)
             claimAssertions.run(account);
-            return identity;
-        });
+
+        return identity;
+    }
+
+    private boolean isSuperAdmin(String email) {
+        return superAdmins.map(list -> list.contains(email)).orElse(false);
     }
 
     @Transactional
-    Account syncAccount(String email, String name) {
-        var account = Account.<Account>find("email", email)
-                .firstResultOptional().orElseGet(() -> {
-                    Account newAcc = new Account();
-                    newAcc.email = email;
-                    return newAcc;
-                });
+    Account createSuperAdmin(String email, String name) {
+        var account = new Account();
+        account.email = email;
         account.fullName = name;
-        var shouldBeAdmin = superAdmins
-                .map(list -> list.contains(email))
-                .orElse(false);
-        account.isSuperAdmin = shouldBeAdmin;
+        account.isSuperAdmin = true;
         account.persistAndFlush();
         return account;
     }
