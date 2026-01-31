@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.hibernate.Hibernate;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +46,7 @@ public class CreateAssertion {
         if (badgeClass == null)
             throw DomainException.notFound("Badge no encontrada");
         for (String email : request.emails()) {
-            var emailsha256 = new DigestUtils(MessageDigestAlgorithms.SHA_256).digestAsHex(email);
+            var emailsha256 = DigestUtils.sha256Hex(email);
             var exists = Assertion.count("badgeClass = ?1 and recipientEmail = ?2",
                     badgeClass, emailsha256) > 0;
             if (exists)
