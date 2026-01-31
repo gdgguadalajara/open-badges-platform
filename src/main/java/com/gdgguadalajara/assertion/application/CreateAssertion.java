@@ -3,6 +3,8 @@ package com.gdgguadalajara.assertion.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -37,6 +39,9 @@ public class CreateAssertion {
         public static native TemplateInstance htmlPayload(String baseUrl, Assertion assertion);
     }
 
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+            Pattern.CASE_INSENSITIVE);
+
     @ConfigProperty(name = "com.gdgguadalajara.open-badges-platform.domain")
     public String domain;
 
@@ -45,7 +50,13 @@ public class CreateAssertion {
         BadgeClass badgeClass = BadgeClass.findById(badgeClassUuid);
         if (badgeClass == null)
             throw DomainException.notFound("Badge no encontrada");
-        for (String email : request.emails()) {
+
+        List<String> validEmails = request.emails().stream()
+                .map(email -> email != null ? email.trim().toLowerCase() : "")
+                .filter(email -> !email.isEmpty() && EMAIL_PATTERN.matcher(email).matches())
+                .collect(Collectors.toList());
+
+        for (String email : validEmails) {
             var emailsha256 = DigestUtils.sha256Hex(email);
             var exists = Assertion.count("badgeClass = ?1 and recipientEmail = ?2",
                     badgeClass, emailsha256) > 0;
