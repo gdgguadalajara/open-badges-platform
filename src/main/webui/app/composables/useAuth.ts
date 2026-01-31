@@ -1,17 +1,44 @@
-import type { MeResponse } from "~/models";
-import { getApiAuthMe } from "~/services/authentication-resource/authentication-resource";
+import type { MeResponse } from "~/models"
+import { getApiAuthMe, type getApiAuthMeResponse } from "~/services/authentication-resource/authentication-resource"
 
 export const useAuth = () => {
-    const me = useState<MeResponse | null>('auth-user', () => null);
-    const isLoading = useState<boolean | null>('auth-user-loading', () => false);
-    const fetchMe = () => {
-        if (isLoading.value == true) return
-        isLoading.value = true;
-        getApiAuthMe()
-            .then(({ data, status }) => status == 200 ? Promise.resolve(data) : Promise.reject())
-            .then(data => me.value = data)
-            .finally(() => isLoading.value = false)
+    const meResponse = useState<getApiAuthMeResponse | null>('auth-response', () => null)
+    const me = useState<MeResponse | null>('auth-user', () => null)
+    const lastCheck = useState<number>('lastAuthCheck', () => 0)
+    const currentFlight = useState<Promise<any> | null>('auth-promise', () => null)
+
+    const CHECK_INTERVAL = 30 * 60 * 1000
+
+    const fetchMe = async () => {
+        const now = Date.now()
+
+        if (me.value && (now - lastCheck.value < CHECK_INTERVAL))
+            return me.value
+
+        if (currentFlight.value)
+            return currentFlight.value
+
+        currentFlight.value = (async () => {
+            try {
+                const payload = await getApiAuthMe()
+                meResponse.value = payload
+
+                if (payload.status === 200) {
+                    me.value = payload.data
+                    lastCheck.value = Date.now()
+                    return payload.data
+                }
+                return null
+            } catch (e) {
+                meResponse.value = { data: null, status: 302 } as any
+                return null
+            } finally {
+                currentFlight.value = null
+            }
+        })()
+
+        return currentFlight.value
     }
-    if (me.value == null) fetchMe()
-    return { me, fetchMe }
+
+    return { me, meResponse, fetchMe }
 }

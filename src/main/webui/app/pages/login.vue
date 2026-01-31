@@ -1,17 +1,15 @@
 <script setup>
-import { getApiAuthMe } from '~/services/authentication-resource/authentication-resource';
+const { meResponse, fetchMe } = useAuth()
 
-const { error, data } = useLazyAsyncData(() => getApiAuthMe())
-
-watch(error, (error) => {
-    if (error) return navigateTo('/api/auth/login', { external: true })
+onMounted(() => {
+    fetchMe()
 })
 
-watch(data, (data) => {
-    if (data.status == 302) return navigateTo('/api/auth/login', { external: true })
-    if (data.status == 404) return navigateTo('/register')
-    if (data.status == 200) useAuth().me.value = data.data
-    if (data.data.account) return navigateTo('/')
+watchEffect(() => {
+    if (meResponse.value?.status && meResponse.value?.status >= 300 && meResponse.value?.status <= 399)
+        return navigateTo('/api/auth/login', { external: true })
+    if (meResponse.value?.status && meResponse.value?.status >= 400 && meResponse.value?.status <= 499)
+        return navigateTo('/register')
 })
 </script>
 
