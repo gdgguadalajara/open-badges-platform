@@ -1,0 +1,54 @@
+{@String codeLink}
+{@String code}
+<!doctype html>
+<html>
+
+<body>
+    <div
+        style='background-color:#F5F5F5;color:#262626;font-family:"Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial, sans-serif;font-size:16px;font-weight:400;letter-spacing:0.15008px;line-height:1.5;margin:0;padding:32px 0;min-height:100%;width:100%'>
+        <table align="center" width="100%" style="margin:0 auto;max-width:600px;background-color:#FFFFFF"
+            role="presentation" cellspacing="0" cellpadding="0" border="0">
+            <tbody>
+                <tr style="width:100%">
+                    <td>
+                        <div style="font-weight:normal;padding:16px 24px 16px 24px">
+                            Recibimos una solicitud para vincular este correo electrónico a
+                            tu identidad en nuestra plataforma de insignias digitales.
+                        </div>
+                        <div style="text-align:center;padding:16px 24px 16px 24px">
+                            <a href="{codeLink}"
+                                style="color:#FFFFFF;font-size:16px;font-weight:bold;background-color:#0082ce;border-radius:4px;display:inline-block;padding:12px 20px;text-decoration:none"
+                                target="_blank"><span><!--[if mso
+                      ]><i
+                        style="letter-spacing: 20px;mso-font-width:-100%;mso-text-raise:30"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span><span>Vincular correo</span><span><!--[if mso
+                      ]><i
+                        style="letter-spacing: 20px;mso-font-width:-100%"
+                        hidden
+                        >&nbsp;</i
+                      ><!
+                    [endif]--></span></a>
+                        </div>
+                        <div style="font-weight:normal;padding:16px 24px 16px 24px">
+                            O confirma la vinculacion desde tu perfil con el codigo: 
+                            <br />
+                            <strong>{code}</strong>
+                        </div>
+                        <div style="font-weight:normal;padding:16px 24px 16px 24px">
+                            Nota: Por seguridad, este link expirará en 15 minutos.
+                        </div>
+                        <div style="font-weight:normal;padding:16px 24px 16px 24px">
+                            Si no has sido tú, no te preocupes; simplemente borra este
+                            mensaje.
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

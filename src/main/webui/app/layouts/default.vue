@@ -38,6 +38,12 @@ const { me } = useAuth()
                             Mis credenciales
                         </NuxtLink>
                     </li>
+                    <li>
+                        <NuxtLink :to="`/profile`">
+                            <Icon name="material-symbols:person" class="text-2xl" />
+                            Perfil
+                        </NuxtLink>
+                    </li>
                     <li></li>
                     <li>
                         <NuxtLink to="/logout">

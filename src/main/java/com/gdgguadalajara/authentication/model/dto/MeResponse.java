@@ -6,7 +6,8 @@ import com.gdgguadalajara.account.model.Account;
 import com.gdgguadalajara.membership.model.IssuerMember;
 
 public record MeResponse(
-        Account account,
-        List<IssuerMember> memberships) {
+                Account account,
+                List<IssuerMember> memberships,
+                List<String> linkedEmails) {
 
 }

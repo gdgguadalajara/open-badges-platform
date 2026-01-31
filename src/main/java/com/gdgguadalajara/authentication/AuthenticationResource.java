@@ -4,6 +4,7 @@ import java.net.URI;
 
 import com.gdgguadalajara.account.application.RegisterAccount;
 import com.gdgguadalajara.account.model.Account;
+import com.gdgguadalajara.account.model.LinkedEmail;
 import com.gdgguadalajara.account.model.dto.RegisterAccountRequest;
 import com.gdgguadalajara.authentication.application.GetCurrentSession;
 import com.gdgguadalajara.authentication.model.dto.MeResponse;
@@ -33,7 +34,8 @@ public class AuthenticationResource {
     public MeResponse me() {
         var account = getCurrentSession.run();
         var memberships = IssuerMember.<IssuerMember>list("account", account);
-        return new MeResponse(account, memberships);
+        var emails = LinkedEmail.<LinkedEmail>list("account", account);
+        return new MeResponse(account, memberships, emails.stream().map(e -> e.email).toList());
     }
 
     @POST
