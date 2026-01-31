@@ -1,0 +1,16 @@
+{
+    "@context": "https://w3id.org/openbadges/v2",
+    "id": "urn:uuid:edb7dd30-690a-4901-beb6-21af30a80ba0",
+    "type": "Assertion",
+    "recipient": {
+        "type": "email",
+        "identity": "SHA256$199e88c113bd6966d72243dbfddc9910ed7203f9671262aa0f95809318afedf2",
+        "hashed": true
+    },
+    "badge": "urn:uuid:f1f21e11-c76d-4cda-a2b3-103b2ca39903",
+    "issuedOn": "1970-01-01T00:00:00Z",
+    "verification": {
+        "type": "hosted"
+    },
+    "evidence": []
+}

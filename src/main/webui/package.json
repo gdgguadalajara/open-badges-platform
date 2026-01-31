@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt generate",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -12,12 +12,17 @@
   "dependencies": {
     "@nuxt/icon": "^2.2.1",
     "@tailwindcss/vite": "^4.1.18",
+    "dayjs": "^1.11.19",
+    "dompurify": "^3.3.1",
+    "marked": "^17.0.1",
     "nuxt": "^4.3.0",
+    "nuxt-toast": "^1.4.0",
     "tailwindcss": "^4.1.18",
     "vue": "^3.5.27",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.19",
     "daisyui": "^5.5.14",
     "orval": "^8.1.0"
   }
