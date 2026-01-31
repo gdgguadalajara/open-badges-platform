@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 
 @Path("/api/auth")
 @AllArgsConstructor
+@Authenticated
 public class AuthenticationResource {
 
     private final OidcSession oidcSession;
@@ -29,8 +30,13 @@ public class AuthenticationResource {
     private final RegisterAccount registerAccount;
 
     @GET
+    @Path("/")
+    public Response index() {
+        return Response.ok().build();
+    }
+
+    @GET
     @Path("/me")
-    @Authenticated
     public MeResponse me() {
         var account = getCurrentSession.run();
         var memberships = IssuerMember.<IssuerMember>list("account", account);
@@ -40,7 +46,6 @@ public class AuthenticationResource {
 
     @POST
     @Path("/register")
-    @Authenticated
     public Account register(RegisterAccountRequest request) {
         if (request.acceptedLegal() == null || !request.acceptedLegal())
             throw DomainException.badRequest("Debe aceptar los términos y condiciones");
@@ -49,7 +54,6 @@ public class AuthenticationResource {
 
     @GET
     @Path("/login")
-    @Authenticated
     public Response login() {
         try {
             getCurrentSession.run();
@@ -61,7 +65,6 @@ public class AuthenticationResource {
 
     @GET
     @Path("/logout")
-    @Authenticated
     public Uni<Response> logout() {
         return oidcSession.logout()
                 .onItem().transform(v -> Response.seeOther(URI.create("/")).build());
