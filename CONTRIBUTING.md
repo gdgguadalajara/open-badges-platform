@@ -38,24 +38,7 @@ cd open-badges-platform
 
 ```
 
-### 2. Generar Certificados JWT
-
-Utilizamos `SmallRye JWT` para la autenticación, lo cual requiere un par de llaves RSA.
-
-Ejecuta lo siguiente desde la raíz del proyecto:
-
-```bash
-mkdir -p data
-
-openssl genrsa -out data/rsaPrivateKey.pem 2048
-openssl rsa -pubout -in data/rsaPrivateKey.pem -out data/publicKey.pem
-openssl pkcs8 -topk8 -nocrypt -inform pem -in data/rsaPrivateKey.pem -outform pem -out data/privateKey.pem
-
-```
-
-Esto generará los archivos `.pem` necesarios en `data/`.
-
-### 3. Ejecutar la Aplicación
+### 2. Ejecutar la Aplicación
 
 Para levantar tanto el backend (Quarkus) como el frontend (Nuxt/Quinoa) en modo desarrollo con recarga en caliente (Live Coding), usa el siguiente comando:
 
