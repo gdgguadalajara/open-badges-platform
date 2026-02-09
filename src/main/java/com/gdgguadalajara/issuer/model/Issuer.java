@@ -12,7 +12,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 
 @Entity
 public class Issuer extends PanacheEntityBase {
@@ -24,7 +23,7 @@ public class Issuer extends PanacheEntityBase {
     @Column(nullable = false)
     public String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     public String description;
 
     @Column(nullable = false)
@@ -36,7 +35,7 @@ public class Issuer extends PanacheEntityBase {
     @Column(nullable = false)
     public String logoUrl;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     @JsonRawValue
     public String jsonPayload;
     

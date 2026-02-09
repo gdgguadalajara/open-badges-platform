@@ -23,7 +23,7 @@ public class Image extends PanacheEntityBase {
     public UUID id;
 
     @JdbcTypeCode(Types.BINARY)
-    @Column(nullable = false, columnDefinition = "BLOB")
+    @Column(nullable = false)
     @JsonIgnore
     public byte[] data;
 
