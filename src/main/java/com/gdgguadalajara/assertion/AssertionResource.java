@@ -22,15 +22,21 @@ public class AssertionResource {
     @Produces({ MediaType.TEXT_HTML, "application/ld+json", MediaType.APPLICATION_JSON })
     public Response assertion(UUID uuid, @HeaderParam("Accept") String acceptHeader) {
         var assertion = Assertion.<Assertion>findById(uuid);
+
         if (assertion == null || !assertion.isPublic || assertion.account == null)
             throw DomainException.notFound("Acreditación no encontrada");
-        if (acceptHeader != null && acceptHeader.contains(MediaType.TEXT_HTML)) {
-            return Response.ok(assertion.htmlPayload)
-                    .type(MediaType.TEXT_HTML)
+
+        if (acceptHeader != null &&
+                (acceptHeader.contains(MediaType.APPLICATION_JSON)
+                        || acceptHeader.contains("application/ld+json"))) {
+
+            return Response.ok(assertion.jsonPayload)
+                    .type("application/ld+json")
                     .build();
         }
-        return Response.ok(assertion.jsonPayload)
-                .type("application/ld+json")
+
+        return Response.ok(assertion.htmlPayload)
+                .type(MediaType.TEXT_HTML)
                 .build();
     }
 }
