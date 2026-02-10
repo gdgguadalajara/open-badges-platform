@@ -10,9 +10,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     ]
     
     const isPublicRoute = publicRouteNames.includes(to.name as string)
+    await fetchMe()
     if (!isPublicRoute) {
-        await fetchMe()
-
         if (meResponse.value?.status && meResponse.value?.status >= 300 && meResponse.value?.status <= 399)
             return navigateTo('/login')
         if (
