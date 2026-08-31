@@ -109,14 +109,28 @@ watch(params, _ => refresh())
         <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
             <div v-for="assertion in paginatedAssertions.data" :key="assertion.id" class="card card-hover p-4 group">
                 <button @click="open(assertion)" class="block w-full" :aria-label="`Ver ${assertion.badgeClass.name}`">
-                    <img :src="assertion.badgeClass.jsonPayload.image" :alt="assertion.badgeClass.name"
-                        class="aspect-square w-full rounded-2xl object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+                    <div class="relative">
+                        <img :src="assertion.badgeClass.jsonPayload.image" :alt="assertion.badgeClass.name"
+                            class="aspect-square w-full rounded-2xl object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                            :class="assertion.isRevoked ? 'opacity-60 grayscale' : ''" />
+                        <span v-if="assertion.isRevoked"
+                            class="absolute inset-0 flex items-center justify-center">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-danger px-3 py-1.5 text-xs font-bold text-white shadow-card-hover">
+                                <Icon name="material-symbols:block" class="text-base" />
+                                Revocada
+                            </span>
+                        </span>
+                    </div>
                 </button>
                 <div class="mt-4 flex flex-col gap-1">
                     <h3 class="font-display text-sm font-bold leading-snug line-clamp-2">{{ assertion.badgeClass.name }}</h3>
                     <p class="text-xs text-ink-soft line-clamp-1">{{ assertion.badgeClass.issuer?.name }}</p>
-                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                        <span class="badge badge-success">
+                    <div class="flex items-center gap-1.5 mt-1">
+                        <span v-if="assertion.isRevoked" class="badge badge-danger">
+                            <Icon name="material-symbols:block" class="text-sm" />
+                            Revocada
+                        </span>
+                        <span v-else class="badge badge-success">
                             <Icon name="material-symbols:verified" class="text-sm" />
                             Verificada
                         </span>
@@ -125,6 +139,9 @@ watch(params, _ => refresh())
                             {{ assertion.isPublic ? 'Pública' : 'Privada' }}
                         </span>
                     </div>
+                    <p v-if="assertion.isRevoked && assertion.revocationReason" class="text-xs text-danger mt-1 line-clamp-2">
+                        {{ assertion.revocationReason }}
+                    </p>
                 </div>
                 <div class="mt-4 flex gap-2">
                     <button @click="toggleVisibility(assertion)" class="btn btn-outline btn-sm flex-1"
@@ -133,7 +150,7 @@ watch(params, _ => refresh())
                         <Icon v-if="togglingId == assertion.id" name="material-symbols:progress-activity" class="text-lg animate-spin" />
                         <Icon v-else :name="assertion.isPublic ? 'material-symbols:visibility-off' : 'material-symbols:visibility'" class="text-lg" />
                     </button>
-                    <button @click="openShare(assertion)" class="btn btn-outline btn-sm flex-1" aria-label="Compartir">
+                    <button v-if="!assertion.isRevoked" @click="openShare(assertion)" class="btn btn-outline btn-sm flex-1" aria-label="Compartir">
                         <Icon name="material-symbols:share" class="text-lg" />
                     </button>
                     <a :href="`/api/admin/assertions/${assertion.id}/bakedimage`" target="_blank" rel="noopener"

@@ -116,11 +116,37 @@
             font-weight: 600;
             font-size: 14px;
         }
+
+        .revoked-banner {
+            background: #dc2626;
+            color: #ffffff;
+            padding: 14px 20px;
+            text-align: center;
+        }
+
+        .revoked-banner strong {
+            font-size: 15px;
+            display: block;
+        }
+
+        .revoked-banner p {
+            font-size: 13px;
+            margin-top: 4px;
+            opacity: 0.95;
+        }
     </style>
 </head>
 
 <body>
     <div class="badge-container">
+        {#if assertion.isRevoked}
+        <div class="revoked-banner">
+            <strong>Esta credencial fue revocada</strong>
+            {#if assertion.revocationReason}
+            <p>{assertion.revocationReason}</p>
+            {/if}
+        </div>
+        {/if}
         <div class="badge-header">
             <div class="label" style="color: #94a3b8;">Emisor Autorizado</div>
             <a href="{baseUrl}/organizations/{assertion.badgeClass.issuer.id}" target="_blank"

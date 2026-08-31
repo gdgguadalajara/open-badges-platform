@@ -1,15 +1,16 @@
 package com.gdgguadalajara.issuer;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.gdgguadalajara.common.PageBuilder;
 import com.gdgguadalajara.common.model.DomainException;
 import com.gdgguadalajara.common.model.PaginatedResponse;
 import com.gdgguadalajara.common.model.dto.PaginationRequestParams;
+import com.gdgguadalajara.issuer.application.BuildRevocationList;
 import com.gdgguadalajara.issuer.application.CreateIssuer;
 import com.gdgguadalajara.issuer.model.Issuer;
 import com.gdgguadalajara.issuer.model.dto.CreateIssuerRequest;
+import com.gdgguadalajara.issuer.model.dto.RevocationListJsonLd;
 import com.gdgguadalajara.membership.model.IssuerMember;
 import com.gdgguadalajara.membership.model.MemberRole;
 import com.gdgguadalajara.security.annotations.SecuredAction;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class IssuerResource {
 
     private final CreateIssuer createIssuer;
+    private final BuildRevocationList buildRevocationList;
 
     @POST
     @Authenticated
@@ -63,8 +65,9 @@ public class IssuerResource {
 
     @GET
     @Path("/{issuerUuid}/revocations")
-    public List<IssuerMember> revocations(UUID issuerUuid) {
-        return List.of();
+    @Produces(MediaType.APPLICATION_JSON)
+    public RevocationListJsonLd revocations(UUID issuerUuid) {
+        return buildRevocationList.run(issuerUuid);
     }
 
 }

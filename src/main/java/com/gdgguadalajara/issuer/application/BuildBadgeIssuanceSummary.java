@@ -43,7 +43,7 @@ public class BuildBadgeIssuanceSummary {
     }
 
     @Transactional
-    public BadgeIssuanceSummary runForBadge(UUID issuerUuid, UUID badgeClassUuid) {
+    public BadgeIssuanceSummary run(UUID issuerUuid, UUID badgeClassUuid) {
         BadgeClass badge = BadgeClass.<BadgeClass>findById(badgeClassUuid);
         if (badge == null || !badge.issuer.id.equals(issuerUuid))
             throw DomainException.notFound("Credencial no encontrada");

@@ -1,6 +1,7 @@
 <script setup>
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
+import { MemberRole } from '~/models'
 import { getApiAdminBadgesUuid } from '~/services/admin-resource/admin-resource'
 
 const toast = useToast()
@@ -70,6 +71,13 @@ const copyJson = () => copy(JSON.stringify(jsonDl.value), 'JSON-LD copiado')
                         <BadgesEmitBadge :issuer-id="payload.data.issuer.id" :badge-id="badgeId" />
                     </OnlyMembers>
                 </div>
+            </div>
+
+            <!-- Revocation (OWNER / ADMIN) -->
+            <div class="mt-4 flex justify-end">
+                <OnlyMembers :issuer-uuid="payload.data.issuer.id" :roles="[MemberRole.OWNER, MemberRole.ADMIN]">
+                    <BadgesRevokeBadge :issuer-uuid="payload.data.issuer.id" :badge-class-uuid="badgeId" />
+                </OnlyMembers>
             </div>
 
             <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -2,7 +2,10 @@ package com.gdgguadalajara.issuer;
 
 import java.util.UUID;
 
+import com.gdgguadalajara.assertion.application.RevokeBadgeAssertions;
 import com.gdgguadalajara.assertion.model.dto.BadgeIssuanceSummary;
+import com.gdgguadalajara.assertion.model.dto.RevokeBadgeAssertionsRequest;
+import com.gdgguadalajara.assertion.model.dto.RevokeBadgeAssertionsResponse;
 import com.gdgguadalajara.badgeclass.application.CreateBadgeClass;
 import com.gdgguadalajara.badgeclass.application.RemoveBadgeClass;
 import com.gdgguadalajara.badgeclass.model.BadgeClass;
@@ -20,6 +23,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.BeanParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,7 @@ public class IssuerBadgeClassResource {
     private final CreateBadgeClass createBadgeClass;
     private final RemoveBadgeClass removeBadgeClass;
     private final BuildBadgeIssuanceSummary buildBadgeIssuanceSummary;
+    private final RevokeBadgeAssertions revokeBadgeAssertions;
 
     @GET
     public PaginatedResponse<BadgeClass> read(UUID issuerUuid, @BeanParam @Valid PaginationRequestParams params) {
@@ -51,7 +56,16 @@ public class IssuerBadgeClassResource {
     @Authenticated
     @OrgRole({ MemberRole.OWNER, MemberRole.ADMIN })
     public BadgeIssuanceSummary analyticsForBadge(UUID issuerUuid, UUID badgeClassUuid) {
-        return buildBadgeIssuanceSummary.runForBadge(issuerUuid, badgeClassUuid);
+        return buildBadgeIssuanceSummary.run(issuerUuid, badgeClassUuid);
+    }
+
+    @PATCH
+    @Path("/{badgeClassUuid}/revoke")
+    @Authenticated
+    @OrgRole({ MemberRole.OWNER, MemberRole.ADMIN })
+    public RevokeBadgeAssertionsResponse revokeBadge(UUID issuerUuid, UUID badgeClassUuid,
+            @Valid RevokeBadgeAssertionsRequest request) {
+        return revokeBadgeAssertions.run(issuerUuid, badgeClassUuid, request);
     }
 
     @POST

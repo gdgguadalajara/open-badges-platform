@@ -17,7 +17,9 @@ public record AssertionJsonLd(
         String badge,
         String issuedOn,
         Verification verification,
-        List<Evidence> evidence) {
+        List<Evidence> evidence,
+        Boolean revoked,
+        String revocationReason) {
 
     public record Recipient(String type, String identity, boolean hashed) {
     }
@@ -52,6 +54,8 @@ public record AssertionJsonLd(
                 badgeUrl,
                 entity.issuedOn.toString(),
                 new Verification("hosted"),
-                evidences);
+                evidences,
+                entity.isRevoked ? true : null,
+                entity.revocationReason);
     }
 }
